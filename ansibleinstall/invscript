@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cat << EOF
+{
+	"examservers": [ "centos1.example.com.local", "centos2.example.com.local" ]
+	"ansiblehosts": [ "ansible.example.com.local" ]
+	"hackers": [ "centos2.example.com.local" ]
+	"allhosts:children": [ "examservers", "ansiblehosts" ]
+	
