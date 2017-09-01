@@ -1,0 +1,44 @@
+$script = <<SCRIPT
+	useradd -m myuser
+	echo Ansible123|passwd --stdin myuser
+	echo "myuser ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/myuser
+	mkdir /home/myuser/.ssh
+	chown myuser:myuser /home/myuser/.ssh
+	chmod 0700 /home/myuser/.ssh
+	sed -i.bak -e "s/asswordAuthentication no/asswordAuthentication yes/" /etc/ssh/sshd_config
+	systemctl restart sshd
+	yum install epel-release -y
+        yum install ansible git -y
+SCRIPT
+
+Vagrant.configure(2) do |config|
+
+	config.vm.define "centos" do |conf|
+		conf.vm.box = "centos/7"
+		conf.vm.hostname = "centos.example.com"
+		conf.vm.network "private_network", ip: "10.0.0.102"
+		conf.vm.provision "shell", inline: $script
+	end
+	config.vm.define "ansible" do |conf|
+		conf.vm.box = "centos/7"
+		conf.vm.hostname = "ansible.example.com"
+		conf.vm.network "private_network", ip: "10.0.0.101"
+		conf.vm.provision "shell", inline: $script
+		conf.vm.provision "shell", inline: <<-SHELL
+			useradd -m ansibleadmin
+			echo Ansible123|passwd --stdin ansibleadmin
+			echo "ansibleadmin ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/ansibleadmin
+			mkdir /home/ansibleadmin/.ssh
+			chown ansibleadmin:ansibleadmin /home/ansibleadmin/.ssh
+			chmod 0700 /home/ansibleadmin/.ssh
+			cp /vagrant/invfile /var/ansible.inventory
+			cp /vagrant/invfile /etc/ansible/hosts
+			chown ansibleadmin:ansibleadmin /var/ansible.inventory
+			chmod 0755 /var/ansible.inventory
+			echo "export ANSIBLE_INVENTORY=/var/ansible.inventory" >> /home/ansibleadmin/.bashrc
+			sed -i.bak -e"s/#host_key_checking/host_key_checking/" /etc/ansible/ansible.cfg
+			su ansibleadmin -c "ssh-keygen -f /home/ansibleadmin/.ssh/id_rsa -t rsa -N ''"
+			ansible all -m copy -a "src=/home/ansibleadmin/.ssh/id_rsa.pub dest=/home/myuser/.ssh/authorized_keys mode=0600"
+		SHELL
+	end
+end
