@@ -1,0 +1,13 @@
+---
+
+- name: stop httpd playbook
+  hosts: examservers
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  tasks:
+   - name: start httpd
+     service:
+      name: httpd
+      state: stopped
+      enabled: true

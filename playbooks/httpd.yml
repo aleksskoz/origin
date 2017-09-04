@@ -5,13 +5,13 @@
   become_user: root
   remote_user: vagrant
   tasks: 
-	- name: install httpd package
-	  yum: name=httpd state=installed
+   - name: install httpd package
+     yum: name=httpd state=installed
 
-	- name: start and enable httpd service
-	  service: name=httpd state=started enabled=true
+   - name: start and enable httpd service
+     service: name=httpd state=started enabled=true
 
-	- copy: dest=/var/www/html/index.html content="Hello from {{ansible_hostname}}"
-	
-	- name: Check that you can connect (GET) - {{ansible_all_ipv4_addresses[0]}}
-	  uri: url=http://{{ansible_all_ipv4_addresses[0]}} status_code=200
+   - copy: dest=/var/www/html/index.html content="Hello from {{ansible_hostname}}"
+
+   - name: Check that you can connect (GET) - {{ansible_all_ipv4_addresses[0]}}
+     uri: url=http://{{ansible_all_ipv4_addresses[0]}} status_code=200
