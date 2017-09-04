@@ -40,6 +40,10 @@ Vagrant.configure(2) do |config|
 			su ansibleadmin -c "ssh-keygen -f /home/ansibleadmin/.ssh/id_rsa -t rsa -N ''"
 			ansible all -m copy -a "src=/home/ansibleadmin/.ssh/id_rsa.pub dest=/home/myuser/.ssh/authorized_keys mode=0600"
 			cp /vagrant/runme.sh /home/ansibleadmin/runme.sh
+			cp /vagrant/adhoc.sh /home/ansibleadmin/adhoc.sh
+			chown ansibleadmin:ansibleadmin /home/ansibleadmin/adhoc.sh
+			chmod 755 /home/ansibleadmin/adhoc.sh
+			su ansibleadmin -c "/home/ansibleadmin/adhoc.sh"
 		SHELL
 	end
 end
