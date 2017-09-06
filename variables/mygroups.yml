@@ -1,0 +1,20 @@
+---
+mygroups:
+ stupidmanagers:
+  gid: 7777
+  members:
+   - myuser1
+   - myuser11
+   - myuser12
+ ansibleadmins:
+  gid: 8888
+  members:
+   - myuser10
+   - myuser11
+   - myuser12
+ hackers:
+  gid: 9999
+  members:
+   - myuser20
+   - myuser21
+   - myuser22

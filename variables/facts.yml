@@ -1,0 +1,12 @@
+---
+- name: configure facts
+  hosts: allhosts
+  gather_facts: yes
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  tasks:
+    - name: display facts
+      debug: msg="short hostname {{ ansible_hostname }} physical processor count {{ ansible_processor_count }} IPv4 address for the default NIC {{ ansible_default_ipv4 }} the MAC address for the default NIC "
+    - name: copy facts
+      copy: dest=/var/www/html/ansible_defaults.html content="short hostname {{ ansible_hostname }} physical processor count {{ ansible_processor_count }} IPv4 address for the default NIC {{ ansible_default_ipv4 }} the MAC address for the default NIC"	

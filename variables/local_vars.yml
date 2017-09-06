@@ -1,0 +1,18 @@
+---
+packages:
+  - net-tools
+  - bind-utils
+  - tcpdump
+users:
+  artemii:
+   username: artemii
+   homedir: /home/artemii
+   shell: /bin/bash
+  dos:
+   username: dos
+   homedir: /home/dos
+   shell: /bin/sh
+  user15:
+   username: user15
+   homedir: /home/user15
+   shell: /sbin/nologin

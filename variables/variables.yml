@@ -1,0 +1,32 @@
+---
+- name: configure and deploy variables
+  hosts: examservers
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  vars:
+   pkg: httpd
+  vars_files:
+   - local_vars.yml
+  tasks:
+   - name: create artemii user
+     user: name="{{ users.artemii.username }}" home="{{ users.artemii.homedir }}" shell="{{ users.artemii.shell }}"
+
+   - name: create dos user
+     user: name="{{ users.dos.username }}" home="{{ users.dos.homedir }}" shell="{{ users.dos.shell }}"
+
+   - name: create user15 user
+     user: name="{{ users.user15.username }}" home="{{ users.user15.homedir }}" shell="{{ users.user15.shell }}"
+
+   - name: install packages
+     yum: name={{item}} state=installed
+     with_items: "{{packages}}"
+
+   - name: stop {{pkg}}
+     service:
+      name: "{{ pkg }}"
+      state: stopped
+      enabled: false
+
+   - name: remove {{pkg}}
+     yum: name="{{ pkg }}" state=removed

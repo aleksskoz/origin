@@ -1,0 +1,23 @@
+[examservers]
+centos1.example.com	ansible_host=10.0.0.102 myport=9999 mytext="it works"
+centos2.example.com	ansible_host=10.0.0.103
+
+[ansiblehosts]
+ansible.example.com	ansible_host=10.0.0.101
+
+[hackers]
+centos2.example.com	ansible_host=10.0.0.103
+
+[allhosts:children]
+examservers
+ansiblehosts
+
+[examservers:vars]
+ansible_user=ansible
+ansible_ssh_pass=Ansible123
+myport=8888
+
+[ansiblehosts:vars]
+ansible_user=ansible
+ansible_ssh_pass=Ansible123
+

@@ -1,0 +1,19 @@
+---
+- name: loops users
+  hosts: centos1.example.com
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  vars:
+  vars_files:
+   - mygroups.yml
+  tasks:
+   - name: create users
+     user: name="user{{ item }}" state=present
+     with_sequence: start=1 end=50
+   - name: create groups
+     group: name="{{ item.key }}" gid="{{ item.gid }}"
+     with_dict: "{{ mygroups }}"
+   - name: create myusers
+     user: name="{{ item.members }}" state=present groups="{{ item.gid }}"
+     with_items: "{{ mygroups }}"
