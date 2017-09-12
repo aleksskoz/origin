@@ -3,9 +3,9 @@ mygroups:
  stupidmanagers:
   gid: 7777
   members:
+   - myuser0
    - myuser1
-   - myuser11
-   - myuser12
+   - myuser2
  ansibleadmins:
   gid: 8888
   members:
