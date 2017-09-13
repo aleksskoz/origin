@@ -1,0 +1,29 @@
+---
+- name: inclusions lab
+  hosts: allhosts
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  gather_facts: no
+  tasks:
+   - name: include vars from vars_users.yml
+     include_vars: file=vars_users.yml name=myvarfile
+
+   - name: delete groups
+     group: name="{{ item }}" state=absent
+     with_items: "{{myvarfile.groupstodelete}}"
+
+   - name: create groups
+     group: name="{{ item }}" state=present
+     with_items: "{{myvarfile.groupstocreate}}"
+
+   - name: delete users
+     user: name="{{ item }}" state=absent
+     with_items: "{{myvarfile.userstodelete}}"
+
+   - name: create users
+     user: name="{{ item }}" state=present groups="mygroup"
+     with_items: "{{myvarfile.userstocreate}}"
+
+   - name: include tasks from tasks.yml 
+     include: tasks.yml
