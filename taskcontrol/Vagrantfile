@@ -1,0 +1,46 @@
+$script=<<SCRIPT
+	useradd -m ansible
+	echo Ansible123|passwd --stdin ansible
+	echo "ansible ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/ansible
+	mkdir /home/ansible/.ssh
+	chown ansible:ansible /home/ansible/.ssh
+	chmod 0700 /home/ansible/.ssh
+	sed -i.bak-e "s/asswordAuthentication no/asswordAuthentication yes/" /etc/ssh/sshd_config
+	systemctl restart sshd
+SCRIPT
+
+Vagrant.configure("2") do |config|
+	
+	config.vm.define "centos1" do |conf|
+		conf.vm.box="centos/7"
+		conf.vm.hostname="centos1.example.com"
+		conf.vm.network "private_network", ip: "10.0.0.11"
+		conf.vm.provision "shell", inline: $script
+	end
+
+        config.vm.define "centos2" do |conf|
+                conf.vm.box="centos/7"
+                conf.vm.hostname="centos1.example.com"
+                conf.vm.network "private_network", ip: "10.0.0.12"
+                conf.vm.provision "shell", inline: $script
+        end
+
+        config.vm.define "ansible" do |conf|
+                conf.vm.box="centos/7"
+                conf.vm.hostname="centos1.example.com"
+                conf.vm.network "private_network", ip: "10.0.0.10"
+                conf.vm.provision "shell", inline: $script
+		conf.vm.provision "shell", inline: <<-SHELL
+		 yum install epel-release -y
+		 yum install ansible crudini -y
+		 cp /vagrant/inventory.txt /home/vagrant/inventory.txt
+		 crudini --set /etc/ansible/ansible.cfg defaults inventory inventory.txt
+		 crudini --set /etc/ansible/ansible.cfg defaults host_key_checking False
+		 ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ''
+		 su vagrant -c "ssh-keygen -f /home/vagrant/.ssh/id_rsa -t rsa -N ''"
+		 ansible all -m copy -a "src=/home/vagrant/.ssh/id_rsa.pub dest=/home/ansible/authorized_keys mode=0600"
+                 cp /vagrant/webproduction.yml /home/vagrant/webproduction.yml
+		 ansible-playbook webproduction.yml
+		SHELL
+        end
+end

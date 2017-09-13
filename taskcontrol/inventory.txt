@@ -1,0 +1,16 @@
+[production]
+centos1.example.com ansible_host=10.0.0.11
+
+[backup]
+centos2.example.com ansible_host=10.0.0.12
+
+[ansible]
+ansible.example.com ansible_host=10.0.0.10 ansible_user=ansible ansible_ssh_pass=Ansible123
+
+[production:vars]
+ansible_user=ansible
+ansible_ssh_pass=Ansible123
+
+[backup:vars]
+ansible_user=ansible
+ansible_ssh_pass=Ansible123

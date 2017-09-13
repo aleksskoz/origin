@@ -1,0 +1,14 @@
+---
+- name: tar.gz
+  hosts: all
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  tasks:
+   - name: production.tar.gz
+     archive: path=/etc dest=/var/tmp/production.tar.gz
+     when: inventory_hostname in groups["production"]
+
+   - name: backup.tar.gz
+     archive: path=/var/log/messages dest=/var/log/backup.tar.gz
+     when: inventory_hostname in groups["backup"]
