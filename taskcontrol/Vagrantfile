@@ -43,11 +43,15 @@ Vagrant.configure("2") do |config|
 		 cp /vagrant/ans.txt /var/tmp/ans.txt
 		 cp /vagrant/ping.yml /home/vagrant/ping.yml
 		 cp /vagrant/saveabort.yml /home/vagrant/saveabort.yml
+		 cp /vagrant/inaccess.yml /home/vagrant/inaccess.yml
+		 cp /vagrant/failweb.yml /home/vagrant/failweb.yml
 		 ansible all -m ping
 		 ansible-playbook webproduction.yml
 		 ansible-playbook ping.yml --tags "nodegroup1"
 		 ansible-playbook ping.yml --tags "nodegroup2"
 		 ansible-playbook saveabort.yml
+		 ansible-playbook inaccess.yml
+		 ansible-playbook failweb.yml
 		SHELL
         end
 end

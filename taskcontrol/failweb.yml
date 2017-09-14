@@ -1,0 +1,29 @@
+---
+- name: failweb.yml
+  hosts: 
+   - centos1.example.com
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  tasks:
+   - name: install mypackage
+     yum: name=mypackage state=installed
+     register: rslt_i
+     ignore_errors: yes
+
+   - name: display result install
+     debug: msg="Installation failed = {{rslt_i.msg}}"
+     when: rslt_i|failed
+
+   - name: start mypackage
+     service: name=mypackage state=started enabled=true
+     register: rslt_s
+     ignore_errors: true
+
+   - name: display result start
+     debug: msg="Starting failed = {{rslt_s.msg}}"
+     when: rslt_s|failed
+
+   - name: display errors
+     debug: msg="Playbook was not successful"
+     when: rslt_i|failed or rslt_s|failed
