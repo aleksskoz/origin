@@ -1,0 +1,14 @@
+---
+- name: saveabort.yml
+  hosts: all
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  tasks:
+   - name: test ansible_abort.txt
+     stat: path=/etc/ansible_abort.txt 
+     register: efile
+
+   - name: create ansible_abort.txt
+     copy: dest=/etc/ansible_abort.txt content="my node is also {{ ansible_hostname }}"
+     when: efile.stat.exists == False     

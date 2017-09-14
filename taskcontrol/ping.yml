@@ -1,0 +1,20 @@
+---
+- name: ping.yml
+  hosts: all
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  tasks:
+   - name: make dirs
+     file: state=directory path=/var/www/html/ owner=root mode=0755
+     tags: always
+
+   - name: tag1.html on centos1
+     copy: src=/var/tmp/ans.txt dest=/var/www/html/tag1.html
+     when: inventory_hostname == 'centos1.example.com'
+     tags: nodegroup1
+
+   - name: tag2.html on centos2
+     copy: src=/var/tmp/ans.txt dest=/var/www/html/tag2.html
+     when: inventory_hostname == 'centos2.example.com'
+     tags: nodegroup2
