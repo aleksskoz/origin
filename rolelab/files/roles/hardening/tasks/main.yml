@@ -1,0 +1,14 @@
+---
+- name: templating hosts
+  template:
+   src: hosts.j2
+   dest: /etc/hosts
+   backup: yes
+
+- name: add nginx group
+  group: name={{ nginx_group }} state=present
+
+- name: add nginx user
+  user: name={{ nginx_user }} state=present groups={{ nginx_group }}
+
+

@@ -1,0 +1,6 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+{% for srv in groups['all_servers'] %}
+{% set s = hostvars[srv] %}
+{{ s.ansible_host }} {{ s.ansible_fqdn }}
+{% endfor %}

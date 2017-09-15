@@ -1,0 +1,33 @@
+---
+- name: home task in previous chapter 18, rewrite playbooks using roles
+  hosts: all_servers
+  gather_facts: yes
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  vars:
+  - nginx_user: wwwonly
+  - nginx_group: wwwgroup
+  roles:
+  - hardening
+
+- name: configure backends
+  hosts: backends
+  gather_facts: yes
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  vars:
+  - nginx_user: wwwonly
+  - nginx_group: wwwgroup
+  roles:
+  - nginx
+
+- name: configure frontends
+  hosts: frontends
+  gather_facts: yes
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  roles:
+  - haproxy
