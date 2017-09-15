@@ -1,0 +1,30 @@
+---
+- name: frontends
+  hosts: all
+  gather_facts: yes
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  tasks:
+
+   - name: install HAProxy
+     yum: name=haproxy state=installed
+     when: inventory_hostname in groups["frontends"]
+
+   - name: start HAProxy
+     service: name=haproxy state=started enabled=true
+     when: inventory_hostname in groups["frontends"]
+
+   - name: replacing /etc/haproxy/haproxy.cfg
+     template:
+       src: templates/haproxy.cfg.j2
+       dest: /etc/haproxy/haproxy.cfg
+       owner: root
+       group: root
+       mode: '0644'
+       backup: yes
+     when: inventory_hostname in groups["frontends"]
+
+   - name: restart HAProxy
+     service: name=haproxy state=restarted
+     when: inventory_hostname in groups["frontends"]
